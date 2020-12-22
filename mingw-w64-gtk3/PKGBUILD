@@ -5,8 +5,6 @@ pkgbase=mingw-w64-${_realname}-horizon
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-horizon" "${MINGW_PACKAGE_PREFIX}-gtk-update-icon-cache-horizon")
 pkgver=3.24.24
 pkgrel=1
-provides=("${_realname}")
-conflicts=("${_realname}")
 pkgdesc="GObject-based multi-platform GUI toolkit (v3) (mingw-w64)"
 arch=('any')
 url="https://www.gtk.org/"
@@ -90,7 +88,9 @@ build() {
 }
 
 package_gtk3-horizon() {
-  depends+=("${MINGW_PACKAGE_PREFIX}-gtk-update-icon-cache")
+  depends+=("${MINGW_PACKAGE_PREFIX}-gtk-update-icon-cache-horizon")
+  provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 
   cd "${srcdir}/build-${CARCH}"
 
@@ -118,6 +118,8 @@ package_gtk-update-icon-cache-horizon() {
   depends=("${MINGW_PACKAGE_PREFIX}-gdk-pixbuf2"
            "${MINGW_PACKAGE_PREFIX}-librsvg"
            "${MINGW_PACKAGE_PREFIX}-hicolor-icon-theme")
+  provides=("${MINGW_PACKAGE_PREFIX}-gtk-update-icon-cache")
+  conflicts=("${MINGW_PACKAGE_PREFIX}-gtk-update-icon-cache")
 
   for hook in gtk-update-icon-cache; do
     local hook_path="${srcdir}/${MINGW_PACKAGE_PREFIX}-${hook}.hook";
