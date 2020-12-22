@@ -19,5 +19,5 @@ jobs:
           mingw-w64-x86_64-binutils
     - name: Build
       shell: msys2 {0}
-      run: makepkg -s
+      run: makepkg -s --noconfirm
       working-directory: mingw-w64-gtk3
