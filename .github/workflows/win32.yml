@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  VERSION: 3.24.24-1
+
 jobs:
   build-win32:
     runs-on: windows-latest
@@ -23,6 +26,7 @@ jobs:
         install: >-
           mingw-w64-x86_64-binutils
           patch
+          curl
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-pkg-config
           mingw-w64-x86_64-gtk-doc
@@ -50,3 +54,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         path: C:/_/mingw-w64-gtk3/*.pkg.tar.*
+
+    - name: Upload to bintray
+      shell: msys2 {0}
+      run: |
+        curl -T mingw-w64-x86_64-gtk3-horizon-${{ env.VERSION }}-any.pkg.tar.zst                  -ucarrotindustries:${{ secrets.BINTRAY_API_KEY }} https://api.bintray.com/content/carrotindustries/gtk3-horizon/gtk3-horizon/${{ env.VERSION }}/mingw-w64-x86_64-gtk3-horizon-${{ env.VERSION }}-any.pkg.tar.zst                  -H 'X-Bintray-Publish: 1'
+        curl -T mingw-w64-x86_64-gtk-update-icon-cache-horizon-${{ env.VERSION }}-any.pkg.tar.zst -ucarrotindustries:${{ secrets.BINTRAY_API_KEY }} https://api.bintray.com/content/carrotindustries/gtk3-horizon/gtk3-horizon/${{ env.VERSION }}/mingw-w64-x86_64-gtk-update-icon-cache-horizon-${{ env.VERSION }}-any.pkg.tar.zst -H 'X-Bintray-Publish: 1'
+      working-directory: C:/_/mingw-w64-gtk3
