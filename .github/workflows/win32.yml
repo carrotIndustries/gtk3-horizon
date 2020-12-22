@@ -12,66 +12,36 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: temp
+    - name: Move Checkout
+      run: |
+        Copy-Item -Path ".\temp" -Destination "C:\_" -Recurse
     - uses: msys2/setup-msys2@v2
       with:
         update: true
         install: >-
           mingw-w64-x86_64-binutils
           patch
-          mingw-w64-x86_64-gmp
-          mingw-w64-x86_64-mpfr
-          mingw-w64-x86_64-mpc
-          mingw-w64-x86_64-libwinpthread-git
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-pkg-config
+          mingw-w64-x86_64-gtk-doc
+          mingw-w64-x86_64-meson
+          mingw-w64-x86_64-gobject-introspection
+          mingw-w64-x86_64-sassc
+          mingw-w64-x86_64-libxslt
           mingw-w64-x86_64-gcc-libs
-          mingw-w64-x86_64-hicolor-icon-theme
-          mingw-w64-x86_64-expat
-          mingw-w64-x86_64-gettext
-          mingw-w64-x86_64-bzip2
-          mingw-w64-x86_64-wineditline
-          mingw-w64-x86_64-pcre
-          mingw-w64-x86_64-libffi
-          mingw-w64-x86_64-mpdecimal
-          mingw-w64-x86_64-libtre-git
-          mingw-w64-x86_64-libsystre
-          mingw-w64-x86_64-ncurses
-          mingw-w64-x86_64-libtasn1
-          mingw-w64-x86_64-p11-kit
-          mingw-w64-x86_64-ca-certificates
-          mingw-w64-x86_64-openssl
-          mingw-w64-x86_64-termcap
-          mingw-w64-x86_64-readline
-          mingw-w64-x86_64-tcl
-          mingw-w64-x86_64-sqlite3
-          mingw-w64-x86_64-tk
-          mingw-w64-x86_64-xz
-          mingw-w64-x86_64-python
-          mingw-w64-x86_64-glib2
-          mingw-w64-x86_64-libjpeg-turbo
-          mingw-w64-x86_64-libpng
-          mingw-w64-x86_64-zstd
-          mingw-w64-x86_64-libtiff
-          mingw-w64-x86_64-gdk-pixbuf2
-          mingw-w64-x86_64-brotli
-          mingw-w64-x86_64-graphite2
-          mingw-w64-x86_64-harfbuzz
-          mingw-w64-x86_64-freetype
-          mingw-w64-x86_64-fontconfig
-          mingw-w64-x86_64-lzo2
-          mingw-w64-x86_64-pixman
-          mingw-w64-x86_64-cairo
-          mingw-w64-x86_64-fribidi
-          mingw-w64-x86_64-libdatrie
-          mingw-w64-x86_64-libthai
-          mingw-w64-x86_64-pango
-          mingw-w64-x86_64-libxml2
-          mingw-w64-x86_64-librsvg
           mingw-w64-x86_64-adwaita-icon-theme
           mingw-w64-x86_64-atk
+          mingw-w64-x86_64-cairo
+          mingw-w64-x86_64-gdk-pixbuf2
+          mingw-w64-x86_64-glib2
           mingw-w64-x86_64-json-glib
           mingw-w64-x86_64-libepoxy
+          mingw-w64-x86_64-pango
           mingw-w64-x86_64-shared-mime-info
 
     - name: Build
       shell: msys2 {0}
       run: makepkg -s --noconfirm
-      working-directory: mingw-w64-gtk3
+      working-directory: C:/_/mingw-w64-gtk3
