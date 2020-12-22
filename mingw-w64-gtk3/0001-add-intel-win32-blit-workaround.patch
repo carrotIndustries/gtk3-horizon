@@ -1,0 +1,53 @@
+From 7dfdda43cbe6975d45774aafad9c47ccc792ba1d Mon Sep 17 00:00:00 2001
+From: Lukas K <lu@0x83.eu>
+Date: Tue, 22 Dec 2020 18:46:03 +0100
+Subject: [PATCH] add intel/win32 blit workaround
+
+---
+ gdk/win32/gdkdisplay-win32.h   |  1 +
+ gdk/win32/gdkglcontext-win32.c | 10 ++++++++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/gdk/win32/gdkdisplay-win32.h b/gdk/win32/gdkdisplay-win32.h
+index 3089f4dea0..8f097666ae 100644
+--- a/gdk/win32/gdkdisplay-win32.h
++++ b/gdk/win32/gdkdisplay-win32.h
+@@ -83,6 +83,7 @@ struct _GdkWin32Display
+ 
+   /* WGL/OpenGL Items */
+   guint have_wgl : 1;
++  guint need_intel_workaround : 1;
+   guint gl_version;
+   HWND gl_hwnd;
+ 
+diff --git a/gdk/win32/gdkglcontext-win32.c b/gdk/win32/gdkglcontext-win32.c
+index 0782c9a59a..2e235f8bd5 100644
+--- a/gdk/win32/gdkglcontext-win32.c
++++ b/gdk/win32/gdkglcontext-win32.c
+@@ -207,6 +207,11 @@ _gdk_win32_gl_context_end_frame (GdkGLContext *context,
+           glDrawBuffer(GL_FRONT);
+           glReadBuffer(GL_BACK);
+           gdk_gl_blit_region (window, painted);
++          if (display->need_intel_workaround)
++            {
++              glFlush();
++              gdk_gl_blit_region (window, painted);
++            }
+           glDrawBuffer(GL_BACK);
+           glFlush();
+ 
+@@ -605,6 +610,11 @@ _gdk_win32_display_init_gl (GdkDisplay *display,
+ 
+       display_win32->have_wgl = TRUE;
+       display_win32->gl_version = epoxy_gl_version ();
++      if (strcmp (glGetString (GL_VENDOR), "Intel") == 0)
++        {
++          display_win32->need_intel_workaround = TRUE;
++          GDK_NOTE (OPENGL, g_print ("Enabling Intel blit workaroind\n"));
++        }
+ 
+       display_win32->hasWglARBCreateContext =
+         epoxy_has_wgl_extension (dummy.hdc, "WGL_ARB_create_context");
+-- 
+2.29.2
+

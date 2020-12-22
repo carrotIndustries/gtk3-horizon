@@ -45,3 +45,8 @@ jobs:
       shell: msys2 {0}
       run: makepkg -s --noconfirm
       working-directory: C:/_/mingw-w64-gtk3
+
+    - name: "Upload binaries"
+      uses: actions/upload-artifact@v2
+      with:
+        path: C:/_/mingw-w64-gtk3/*.pkg.tar.*
