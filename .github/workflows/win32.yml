@@ -1,0 +1,21 @@
+name: Build Windows binaries
+
+on:
+  push:
+    branches: [ '*' ]
+    tags: [ '*' ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-win32:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+    - name: Build
+      shell: msys2 {0}
+      run: makepkg -s
+      working-directory: mingw-w64-gtk3
