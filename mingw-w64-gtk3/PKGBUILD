@@ -4,7 +4,7 @@ _realname=gtk3
 pkgbase=mingw-w64-${_realname}-horizon
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-horizon" "${MINGW_PACKAGE_PREFIX}-gtk-update-icon-cache-horizon")
 pkgver=3.24.24
-pkgrel=1
+pkgrel=2
 pkgdesc="GObject-based multi-platform GUI toolkit (v3) (mingw-w64)"
 arch=('any')
 url="https://www.gtk.org/"
@@ -28,7 +28,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs"
          "${MINGW_PACKAGE_PREFIX}-shared-mime-info")
 options=('strip' '!debug' 'staticlibs')
 source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
-        "0001-add-intel-win32-blit-workaround.patch"
+        "0001-gdkglcontext-win32.c-Workaround-Intel-glBlitFramebuf.patch"
         "0002-Revert-Quartz-Set-the-popup-menu-type-hint-before-re.patch"
         "0003-gtkwindow-Don-t-force-enable-CSD-under-Windows.patch"
         "0004-Disable-low-level-keyboard-hook.patch"
@@ -37,7 +37,7 @@ source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar
         "gtk-update-icon-cache.hook.in"
         "gtk-update-icon-cache.script.in")
 sha256sums=('cc9d4367c55b724832f6b09ab85481738ea456871f0381768a6a99335a98378a'
-            '343860f58b97e11dedff205d38b76804300284f82b8ef4165619b764d64c310d'
+            '782a9277c06e8021fd7686ac3b93a78ca65efbc90510cf901e655ea831240ccb'
             '5cdebb11098d241da955d4662904215275fa7a54d52877cc38c4ff4a3087fafd'
             'b84a7f38f0af80680bee143d431f2a7bae53899efb337de0f67a1b4d9b59fa02'
             'e553083298495f9581ae1454b1046a22b83e81862311b30de984057eec859708'
@@ -59,7 +59,7 @@ prepare() {
 
   patch -p1 -i "${srcdir}"/0006_fix_mouse_events.patch
 
-  patch -p1 -i "${srcdir}"/0001-add-intel-win32-blit-workaround.patch
+  patch -p1 -i "${srcdir}"/0001-gdkglcontext-win32.c-Workaround-Intel-glBlitFramebuf.patch
 }
 
 build() {

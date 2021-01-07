@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 env:
-  VERSION: 3.24.24-1
+  VERSION: 3.24.24-2
 
 jobs:
   build-win32:
@@ -56,6 +56,7 @@ jobs:
         path: C:/_/mingw-w64-gtk3/*.pkg.tar.*
 
     - name: Upload to bintray
+      if: ${{ github.ref == 'refs/heads/master' }}
       shell: msys2 {0}
       run: |
         curl -T mingw-w64-x86_64-gtk3-horizon-${{ env.VERSION }}-any.pkg.tar.zst                  -ucarrotindustries:${{ secrets.BINTRAY_API_KEY }} https://api.bintray.com/content/carrotindustries/gtk3-horizon/gtk3-horizon/${{ env.VERSION }}/mingw-w64-x86_64-gtk3-horizon-${{ env.VERSION }}-any.pkg.tar.zst                  -H 'X-Bintray-Publish: 1'
