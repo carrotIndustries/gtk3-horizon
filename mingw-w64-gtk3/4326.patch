@@ -1,0 +1,63 @@
+From d3f46bcb160d845b265ba5aaceaaddb7de088aa7 Mon Sep 17 00:00:00 2001
+From: Luca Bacci <luca.bacci982@gmail.com>
+Date: Mon, 3 Jan 2022 14:39:17 +0100
+Subject: [PATCH] Add GTK grab when opening GtkFileChooserNativeWin32
+
+Implementation copied from gtkfilechoosernativeportal.c
+
+Fixes https://gitlab.gnome.org/GNOME/gtk/-/issues/4582
+---
+ gtk/gtkfilechoosernativewin32.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/gtk/gtkfilechoosernativewin32.c b/gtk/gtkfilechoosernativewin32.c
+index 75fc9fa7c4..4d12a847c1 100644
+--- a/gtk/gtkfilechoosernativewin32.c
++++ b/gtk/gtkfilechoosernativewin32.c
+@@ -44,6 +44,8 @@
+ #include "gtkstylecontext.h"
+ #include "gtkheaderbar.h"
+ #include "gtklabel.h"
++#include "gtkmain.h"
++#include "gtkinvisible.h"
+ #include "gtkfilechooserentry.h"
+ #include "gtkfilefilterprivate.h"
+ 
+@@ -53,8 +55,10 @@
+ 
+ typedef struct {
+   GtkFileChooserNative *self;
+-  IFileDialogEvents *events;
+ 
++  GtkWidget *grab_widget;
++
++  IFileDialogEvents *events;
+   HWND parent;
+   gboolean skip_response;
+   gboolean save;
+@@ -324,6 +328,12 @@ filechooser_win32_thread_data_free (FilechooserWin32ThreadData *data)
+   if (data->events)
+     IFileDialogEvents_Release (data->events);
+ 
++  if (data->grab_widget)
++    {
++      gtk_grab_remove (data->grab_widget);
++      gtk_widget_destroy (data->grab_widget);
++    }
++
+   g_clear_object (&data->current_folder);
+   g_clear_object (&data->current_file);
+   g_free (data->current_name);
+@@ -972,6 +982,9 @@ gtk_file_chooser_native_win32_show (GtkFileChooserNative *self)
+       return FALSE;
+     }
+ 
++  data->grab_widget = gtk_invisible_new ();
++  gtk_grab_add (GTK_WIDGET (data->grab_widget));
++
+   return TRUE;
+ }
+ 
+-- 
+GitLab
+

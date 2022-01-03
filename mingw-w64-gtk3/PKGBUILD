@@ -4,7 +4,7 @@ _realname=gtk3
 pkgbase=mingw-w64-${_realname}-horizon
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-horizon" "${MINGW_PACKAGE_PREFIX}-gtk-update-icon-cache-horizon")
 pkgver=3.24.31
-pkgrel=1
+pkgrel=2
 pkgdesc="GObject-based multi-platform GUI toolkit (v3) (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
@@ -32,6 +32,7 @@ options=('strip' '!debug' 'staticlibs')
 source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar.xz"
         "0003-gtkwindow-Don-t-force-enable-CSD-under-Windows.patch"
         "0004-Disable-low-level-keyboard-hook.patch"
+        "4326.patch"
         "https://gitlab.gnome.org/GNOME/gtk/-/raw/3.24.31/gdk/win32/gdkkeys-win32.h"
         "gtk-query-immodules-3.0.hook.in"
         "gtk-update-icon-cache.hook.in"
@@ -39,6 +40,7 @@ source=("https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-${pkgver}.tar
 sha256sums=('423c3e7fdb4c459ee889e35fd4d71fd2623562541c1041b11c07e5ad1ff10bf9'
             'b84a7f38f0af80680bee143d431f2a7bae53899efb337de0f67a1b4d9b59fa02'
             'e553083298495f9581ae1454b1046a22b83e81862311b30de984057eec859708'
+            '1ac01522f4467e06ee0161a8e9fe955000b2bf45ca96a174604bd6b069c1e25a'
             '540c9fbca675a787377b9ba832df1acb0e870088e0c0bb2484312dc9754797a0'
             'adbe57eb726d882bba7a031ab8fb1788e7cd03cbf713823fd0f99d3cb380b97c'
             '56a566739c4f153f3c924b2bfe5ec7aaca469e15c023810cd7c5f57036d1a258'
@@ -65,6 +67,9 @@ prepare() {
 
   apply_patch_with_msg \
     0004-Disable-low-level-keyboard-hook.patch
+
+  apply_patch_with_msg \
+    4326.patch
 }
 
 build() {
